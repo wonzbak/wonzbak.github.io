@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container">
+            <h1>jquery.tableFilterable</h1>
+            <p class="lead"><strong>filterTable</strong> is a jQuery plugin to filter rows of a table element.</p>
+            <p>It consists on defining a callback which take 2 arguments, <code>$tr</code> which is the jQuery element of the row and <code>filterValue</code> which is the value of the filter.
+            The row is shown if the callback return <code>true</code>, hidden otherwise.</p>
+
+            Exemple :
+            <pre style="background:#fdf6e3;color:#586e75"><span style="color:#859900">$</span><span style="color:#93a1a1">(</span><span style="color:#268bd2">function</span><span style="color:#93a1a1">(</span><span style="color:#93a1a1">)</span> <span style="color:#268bd2">{</span>
+    <span style="color:#859900">$</span><span style="color:#93a1a1">(</span><span style="color:#269186"><span style="color:#c60000">'</span>#table_id<span style="color:#c60000">'</span></span><span style="color:#93a1a1">)</span>.tableFilterable<span style="color:#93a1a1">(</span><span style="color:#268bd2">{</span>
+        filters: <span style="color:#268bd2">[</span><span style="color:#268bd2">{</span>
+            filterSelector: <span style="color:#269186"><span style="color:#c60000">'</span>#input_id<span style="color:#c60000">'</span></span>,  <span style="color:#93a1a1">// selector of the filter controle (may be an input element)</span>
+            <span style="color:#859900">event</span>: <span style="color:#269186"><span style="color:#c60000">'</span>keyup<span style="color:#c60000">'</span></span>,            <span style="color:#93a1a1">// event that fire the filter</span>
+            <span style="color:#a57800">filterCallback</span>: <span style="color:#268bd2">function</span>($tr, filterValue) <span style="color:#268bd2">{</span> <span style="color:#93a1a1">// callback wich determine if a row is shown or not</span>
+                <span style="color:#859900">return</span> <span style="color:#859900">$</span>tr.hasClass<span style="color:#93a1a1">(</span><span style="color:#269186"><span style="color:#c60000">"</span>show<span style="color:#c60000">"</span></span><span style="color:#93a1a1">)</span>;
+            <span style="color:#268bd2">}</span>,
+            delay: <span style="color:#269186">100</span> <span style="color:#93a1a1">// Optional, delay in ms after which the event is fire.</span>
+        <span style="color:#268bd2">}</span><span style="color:#268bd2">]</span>,
+        <span style="color:#a57800">onFilterFinished</span>: <span style="color:#268bd2">function</span>(nbRowShown, nbRowsTotal) <span style="color:#268bd2">{</span> <span style="color:#93a1a1">//Optional, callback called at the end of filter process</span>
+            <span style="color:#859900">$</span><span style="color:#93a1a1">(</span><span style="color:#269186"><span style="color:#c60000">'</span>#num_media<span style="color:#c60000">'</span></span><span style="color:#93a1a1">)</span>.text<span style="color:#93a1a1">(</span>nbRowShown<span style="color:#859900">+</span><span style="color:#269186"><span style="color:#c60000">"</span>/<span style="color:#c60000">"</span></span><span style="color:#859900">+</span>nbRowsTotal<span style="color:#93a1a1">)</span>; <span style="color:#93a1a1">// display the number of rows shown and the total</span>
+        <span style="color:#268bd2">}</span>
+    <span style="color:#268bd2">}</span><span style="color:#93a1a1">)</span>;
+<span style="color:#268bd2">}</span><span style="color:#93a1a1">)</span>;
+</pre>
+            <p>
+            Plugin properties
+                <ul>
+                    <li><code>filters</code> filters definition, see below</li>
+                    <li><code>onFilterFinished</code> function calls when the process of filtering is done.</li>
+                </ul>
+            Filter properties:
+                <ul>
+                    <li><code>filterSelector</code>This is the jQuery selector of the filter control, eg the id of an input element.</li>
+                    <li><code>event</code>The name of the event which fire the filter of the table.</li>
+                    <li><code>filterCallback</code>function that determine if a row have to be displayed. This function must return a boolean, <code>true</code> if the row shown, <code>false</code> if the row is hidden. It takes <code>$tr</code> parameter which is the jQuery element of the row, and <code>filterValue</code> which is the value of the filter.</li>
+                    <li><code>delay</code>Delay in milliseconds after wich the filtering occur. Usefull if you have a huge number of rows and/or complex filters. If for examle, you filter is a <span style="color:#93a1a1">&lt;</span><span style="color:#268bd2;font-weight:700">input</span> <span style="color:#93a1a1">type</span>=<span style="color:#269186"><span style="color:#269186">"</span>text<span style="color:#269186">"</span></span><span style="color:#93a1a1">></span>
+ and the event is onkeypress, filtering will block while your are typing your value. With a delay of 500ms, the filtering process will occur after 500ms.</li>
+                </ul>
+
+            </p>
+            <br /><br /><br />
+            <h3>Example 1 - simple text filter with a <small><span style="color:#93a1a1">&lt;</span><span style="color:#268bd2;font-weight:700">input</span> <span style="color:#93a1a1">type</span>=<span style="color:#269186"><span style="color:#269186">"</span>text<span style="color:#269186">"</span></span><span style="color:#93a1a1"> /></span></small></h3>
+            <p>Filtering on the name column.</p>
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#exemple-1" aria-controls="home" role="tab" data-toggle="tab">Exemple</a></li>
+                        <li role="presentation" class=""><a href="#script-1" aria-controls="home" role="tab" data-toggle="tab">Javascript</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="exemple-1">
+                            <br />
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <form class="form-inline">
+                                       <div class="form-group">
+                                            <label for="filter-1">Name</label>
+                                            <input type="text" class="form-control" id="filter-1" placeholder="enter a name">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <table id="table-filterable-1" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Age</th>
+                                        <th>Gender</th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <td>Bob</td>
+                                    <td>21</td>
+                                    <td>Male</td>
+                                </tr>
+                                <tr>
+                                    <td>Abigail</td>
+                                    <td>13</td>
+                                    <td>Female</td>
+                                </tr>
+                                <tr>
+                                    <td>Chuck</td>
+                                    <td>43</td>
+                                    <td>Male</td>
+                                </tr>
+                                <tr>
+                                    <td>Alice</td>
+                                    <td>35</td>
+                                    <td>Female</td>
+                                </tr>
+                                <tr>
+                                    <td>Thomas</td>
+                                    <td>32</td>
+                                    <td>Male</td>
+                                </tr>
+                                <tr>
+                                    <td>Margot</td>
+                                    <td>17</td>
+                                    <td>Female</td>
+                                </tr>
+                                <tr>
+                                    <td>William</td>
+                                    <td>7</td>
+                                    <td>Male</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="script-1">
+                            <br />
+                            <pre style="background:#fdf6e3;color:#586e75"><span style="color:#859900">$</span><span style="color:#93a1a1">(</span><span style="color:#269186"><span style="color:#c60000">'</span>#table-filterable-1<span style="color:#c60000">'</span></span><span style="color:#93a1a1">)</span>.tableFilterable<span style="color:#93a1a1">(</span><span style="color:#268bd2">{</span>
+    filters: <span style="color:#268bd2">[</span><span style="color:#268bd2">{</span>
+        filterSelector: <span style="color:#269186"><span style="color:#c60000">'</span>#filter-1<span style="color:#c60000">'</span></span>,
+        <span style="color:#859900">event</span>: <span style="color:#269186"><span style="color:#c60000">'</span>keyup<span style="color:#c60000">'</span></span>,
+        <span style="color:#a57800">filterCallback</span>: <span style="color:#268bd2">function</span>($tr, filterValue) <span style="color:#268bd2">{</span>
+            <span style="color:#93a1a1">// return true if the content of the first column contains filtervalue</span>
+            <span style="color:#859900">return</span> <span style="color:#859900">$</span>tr.children<span style="color:#93a1a1">(</span><span style="color:#93a1a1">)</span>.first<span style="color:#93a1a1">(</span><span style="color:#93a1a1">)</span>.text<span style="color:#93a1a1">(</span><span style="color:#93a1a1">)</span>.<span style="color:#268bd2">toLowerCase</span><span style="color:#93a1a1">(</span><span style="color:#93a1a1">)</span>.<span style="color:#268bd2">indexOf</span><span style="color:#93a1a1">(</span>filterValue<span style="color:#93a1a1">)</span> <span style="color:#859900">!</span><span style="color:#859900">=</span> <span style="color:#859900">-</span><span style="color:#269186">1</span>;
+        <span style="color:#268bd2">}</span>
+    <span style="color:#268bd2">}</span><span style="color:#268bd2">]</span>
+<span style="color:#268bd2">}</span><span style="color:#93a1a1">)</span>;
+
+</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br /><br /><br />
+            <h3>Example 2 - combine 2 filters  <small><span style="color:#93a1a1">&lt;</span><span style="color:#268bd2;font-weight:700">input</span> <span style="color:#93a1a1">type</span>=<span style="color:#269186"><span style="color:#269186">"</span>text<span style="color:#269186">"</span></span><span style="color:#93a1a1"> /></span> <span style="color: #333;">and</span> <span style="color:#93a1a1">&lt;</span><span style="color:#268bd2;font-weight:700">input</span> <span style="color:#93a1a1">type</span>=<span style="color:#269186"><span style="color:#269186">"</span>checkbox<span style="color:#269186">"</span></span><span style="color:#93a1a1"> /></span></small></h3>
+            <p>Filtering on the name and the gender.</p>
+            <p>You can conbine several filters, a row is shown if both callback filter returns <code>true</code>.</p>
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#exemple-2" aria-controls="home" role="tab" data-toggle="tab">Exemple</a></li>
+                        <li role="presentation" class=""><a href="#script-2" aria-controls="home" role="tab" data-toggle="tab">Javascript</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="exemple-2">
+                            <br />
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <form class="form-inline">
+                                       <div class="form-group">
+                                            <label for="filter-2-name">Name</label>
+                                            <input type="text" class="form-control" id="filter-2-name" placeholder="enter a name">
+                                        </div>
+                                         <div class="form-group">
+                                            <label for="filter-2-only-male">Only male</label>
+                                            <input type="checkbox" class="form-control" id="filter-2-only-male" placeholder="enter a name">
+                                         </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <table id="table-filterable-2" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Age</th>
+                                        <th>Gender</th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <td>Bob</td>
+                                    <td>21</td>
+                                    <td>Male</td>
+                                </tr>
+                                <tr>
+                                    <td>Abigail</td>
+                                    <td>13</td>
+                                    <td>Female</td>
+                                </tr>
+                                <tr>
+                                    <td>Chuck</td>
+                                    <td>43</td>
+                                    <td>Male</td>
+                                </tr>
+                                <tr>
+                                    <td>Alice</td>
+                                    <td>35</td>
+                                    <td>Female</td>
+                                </tr>
+                                <tr>
+                                    <td>Thomas</td>
+                                    <td>32</td>
+                                    <td>Male</td>
+                                </tr>
+                                <tr>
+                                    <td>Margot</td>
+                                    <td>17</td>
+                                    <td>Female</td>
+                                </tr>
+                                <tr>
+                                    <td>William</td>
+                                    <td>7</td>
+                                    <td>Male</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="script-2">
+                            <br/>
+                            <pre style="background:#fdf6e3;color:#586e75"><span style="color:#859900">$</span><span style="color:#93a1a1">(</span><span style="color:#269186"><span style="color:#c60000">'</span>#table-filterable-2<span style="color:#c60000">'</span></span><span style="color:#93a1a1">)</span>.tableFilterable<span style="color:#93a1a1">(</span><span style="color:#268bd2">{</span>
+    filters: <span style="color:#268bd2">[</span><span style="color:#268bd2">{</span>
+        filterSelector: <span style="color:#269186"><span style="color:#c60000">'</span>#filter-2-name<span style="color:#c60000">'</span></span>,
+        <span style="color:#859900">event</span>: <span style="color:#269186"><span style="color:#c60000">'</span>keyup<span style="color:#c60000">'</span></span>,
+        <span style="color:#a57800">filterCallback</span>: <span style="color:#268bd2">function</span>($tr, filterValue) <span style="color:#268bd2">{</span>
+            <span style="color:#93a1a1">// filterValue is the content of the name input</span>
+            <span style="color:#859900">return</span> <span style="color:#859900">$</span>tr.children<span style="color:#93a1a1">(</span><span style="color:#93a1a1">)</span>.first<span style="color:#93a1a1">(</span><span style="color:#93a1a1">)</span>.text<span style="color:#93a1a1">(</span><span style="color:#93a1a1">)</span>.<span style="color:#268bd2">toLowerCase</span><span style="color:#93a1a1">(</span><span style="color:#93a1a1">)</span>.<span style="color:#268bd2">indexOf</span><span style="color:#93a1a1">(</span>filterValue<span style="color:#93a1a1">)</span> <span style="color:#859900">!</span><span style="color:#859900">=</span> <span style="color:#859900">-</span><span style="color:#269186">1</span>;
+        <span style="color:#268bd2">}</span>
+    <span style="color:#268bd2">}</span>, <span style="color:#268bd2">{</span>
+        filterSelector: <span style="color:#269186"><span style="color:#c60000">'</span>#filter-2-only-male<span style="color:#c60000">'</span></span>,
+        <span style="color:#859900">event</span>: <span style="color:#269186"><span style="color:#c60000">'</span>click<span style="color:#c60000">'</span></span>,
+        <span style="color:#a57800">filterCallback</span>: <span style="color:#268bd2">function</span>($tr, filterValue) <span style="color:#268bd2">{</span>
+            <span style="color:#859900">if</span> <span style="color:#93a1a1">(</span>filterValue<span style="color:#93a1a1">)</span> <span style="color:#268bd2">{</span>
+                <span style="color:#93a1a1">// filterValue is true if the third column contains "Male"</span>
+                <span style="color:#859900">return</span> <span style="color:#859900">$</span>tr.children<span style="color:#93a1a1">(</span><span style="color:#93a1a1">)</span>.last<span style="color:#93a1a1">(</span><span style="color:#93a1a1">)</span>.text<span style="color:#93a1a1">(</span><span style="color:#93a1a1">)</span> <span style="color:#859900">==</span> <span style="color:#269186"><span style="color:#c60000">"</span>Male<span style="color:#c60000">"</span></span>;
+            <span style="color:#268bd2">}</span>
+            <span style="color:#93a1a1">// return true if the checkbox is not clicked</span>
+            <span style="color:#859900">return</span> <span style="color:#b58900">true</span>;
+        <span style="color:#268bd2">}</span>
+    <span style="color:#268bd2">}</span><span style="color:#268bd2">]</span>
+<span style="color:#268bd2">}</span><span style="color:#93a1a1">)</span>;
+
+</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <script src="https://rawgit.com/wonzbak/tableFilterable/master/jquery.table-filterable.js"></script>
+
+        <script>
+            $(function() {
+                $('#table-filterable-1').tableFilterable({
+                    filters: [
+                        {
+                            filterSelector: '#filter-1',
+                            event: 'keyup',
+                            filterCallback: function($tr, filterValue) {
+                                // return true if the content of the first column contains filtervalue
+                                return  $tr.children().first().text().toLowerCase().indexOf(filterValue) != -1;
+                            }
+                        }
+                    ]
+                });
+
+                $('#table-filterable-2').tableFilterable({
+                    filters: [
+                        {
+                            filterSelector: '#filter-2-name',
+                            event: 'keyup',
+                            filterCallback: function($tr, filterValue) {
+                                // filterValue is the content of the name input
+                                return  $tr.children().first().text().toLowerCase().indexOf(filterValue) != -1;
+                            }
+                        },
+                        {
+                            filterSelector: '#filter-2-only-male',
+                            event: 'click',
+                            filterCallback: function($tr, filterValue) {
+                                if (filterValue) {
+                                    // filterValue is true if the third column contains "Male"
+                                    return $tr.children().last().text() == "Male";
+                                }
+                                // return true if the checkbox is not clicked
+                                return true;
+                            }
+                        }
+                    ]
+                });
+            });
+        </script>
+    </body>
+</html>
